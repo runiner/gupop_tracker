@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  db:
+    image: "postgres:16.2"
+    command: ["postgres", "-c", "max_connections=300"]
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: keycloakdb,hrdb
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: dbpassword
+    ports:
+      - "25432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data:rw
+      - ./docker-postgresql-multiple-databases:/docker-entrypoint-initdb.d
+
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbituser
+      RABBITMQ_DEFAULT_PASS: rabbitpass
+      RABBITMQ_DEFAULT_VHOST: rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  keycloack:
+    image: "quay.io/keycloak/keycloak:latest"
+    command: start-dev
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin_pass
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://db:5432/keycloakdb
+      KC_DB_USERNAME: dbuser
+      KC_DB_PASSWORD: dbpassword
+      KC_HOSTNAME_STRICT: false
+      KC_FEATURES: token-exchange
+    ports:
+      - "8080:8080"
+
+volumes:
+  db_data: {}
