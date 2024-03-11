@@ -1,0 +1,65 @@
+{
+    "users": [
+      {
+        "name": "rabbituser",
+        "password_hash": "BqmLRz/E/4jyjHYg1FDxwveYaUYRyv8H/L18gkb/tI23yZpA",
+        "hashing_algorithm": "rabbit_password_hashing_sha256",
+        "tags": ["administrator"]
+      }
+    ],
+    "vhosts":[
+        {
+            "name":"rabbit"
+        }
+    ],
+    "queues": [
+      {
+        "name": "dlx.events_in_tracker",
+        "vhost": "rabbit",
+        "durable": true,
+        "auto_delete": false,
+        "arguments": {
+            "x-queue-type": "classic"
+        }
+      },
+      {
+        "name": "events_in_tracker",
+        "vhost": "rabbit",
+        "durable": true,
+        "auto_delete": false,
+        "arguments": {
+            "x-queue-type": "classic",
+            "dead-letter-exchange":"dlx.events_in_tracker"
+        }
+      }
+    ],
+    "exchanges": [
+    {
+        "name": "events",
+        "vhost": "rabbit",
+        "type": "fanout",
+        "durable": true,
+        "auto_delete": false,
+        "internal": false,
+        "arguments": {}
+    }
+    ],
+    "bindings": [
+    {
+        "source": "events",
+        "vhost": "rabbit",
+        "destination": "events_in_tracker",
+        "destination_type": "queue",
+        "arguments": {}
+    }
+    ],
+    "permissions": [
+    {
+      "user": "rabbituser",
+      "vhost": "rabbit",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+    ]
+}
