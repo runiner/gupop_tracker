@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from . import models, queue
-from .keycloack import create_user
+from .keycloak import create_user
 from .roles import allowed_roles
 
 logger = logging.getLogger(__name__)

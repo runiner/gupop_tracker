@@ -6,7 +6,7 @@ from keycloak import KeycloakAdmin
 @lru_cache
 def get_admin():
     return KeycloakAdmin(
-        server_url="http://keycloack:8080/",  # TODO: provision config via env variables
+        server_url="http://keycloak:8080/",  # TODO: provision config via env variables
         username='admin',
         password='admin_pass',
         realm_name="master",

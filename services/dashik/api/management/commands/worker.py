@@ -1,11 +1,11 @@
 import logging
 import time
 
-from django.core.management.base import BaseCommand
 from pika.exceptions import AMQPConnectionError
+from django.core.management.base import BaseCommand
 
-from tasks.queue import get_client
-from tasks import events  # noqa: registering event handlers
+from api.queue import get_client
+from api import events  # noqa: registering event handlers
 
 logger = logging.getLogger(__name__)
 
