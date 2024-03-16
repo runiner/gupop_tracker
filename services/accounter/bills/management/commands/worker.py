@@ -4,8 +4,8 @@ import time
 from django.core.management.base import BaseCommand
 from pika.exceptions import AMQPConnectionError
 
-from tasks.queue import get_client
-from tasks import events  # noqa: registering event handlers
+from bills.queue import get_client
+from bills import events  # noqa: registering event handlers
 
 logger = logging.getLogger(__name__)
 

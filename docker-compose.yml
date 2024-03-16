@@ -6,7 +6,7 @@ services:
     image: "postgres:16.2"
     command: ["postgres", "-c", "max_connections=300"]
     environment:
-      POSTGRES_MULTIPLE_DATABASES: keycloakdb,hrdb,trackerdb
+      POSTGRES_MULTIPLE_DATABASES: keycloakdb,hrdb,trackerdb,accounterdb,dashikdb
       POSTGRES_USER: dbuser
       POSTGRES_PASSWORD: dbpassword
     ports:
@@ -30,7 +30,7 @@ services:
       - "15672:15672"
 
 
-  keycloack:
+  keycloak:
     image: "quay.io/keycloak/keycloak:latest"
     command: start-dev
     environment:
@@ -56,6 +56,8 @@ services:
   tracker-worker:
     build: services/tracker
     command: python3 manage.py worker
+    depends_on:
+      - rabbitmq
 
 
   tracker-api:
@@ -63,9 +65,33 @@ services:
     command: python3 manage.py runserver 0.0.0.0:8000
 
 
+  accounter-worker:
+    build: services/accounter
+    command: python3 manage.py worker
+    depends_on:
+      - rabbitmq
+
+
+  accounter-api:
+    build: services/accounter
+    command: python3 manage.py runserver 0.0.0.0:8000
+
+
+  dashik-worker:
+    build: services/dashik
+    command: python3 manage.py worker
+    depends_on:
+      - rabbitmq
+
+
+  dashik-api:
+    build: services/dashik
+    command: python3 manage.py runserver 0.0.0.0:8000
+
+
   oauth-proxy:
     image: "quay.io/oauth2-proxy/oauth2-proxy:v7.6.0-alpine"
-    # KeyCloack config as per https://oauth2-proxy.github.io/oauth2-proxy/configuration/providers/keycloak_oidc
+    # KeyCloak config as per https://oauth2-proxy.github.io/oauth2-proxy/configuration/providers/keycloak_oidc
     command:
       - --client-id=gupop
       - --client-secret=qEt6LkZBoz9CGEh89lbWuysZik6d6aV4
@@ -74,14 +100,18 @@ services:
       - --http-address=0.0.0.0:80
       - --upstream=http://hr-api:8000/api/hr/
       - --upstream=http://tracker-api:8000/api/tracker/
+      - --upstream=http://accounter-api:8000/api/accounting/
+      - --upstream=http://dashik-api:8000/api/dash/
       - --provider=keycloak-oidc
       - --redirect-url=http://127.0.0.1:8000/oauth2/callback
-      - --oidc-issuer-url=http://keycloack:8080/realms/master
+      - --oidc-issuer-url=http://keycloak:8080/realms/master
       - --insecure-oidc-skip-issuer-verification
       - --insecure-oidc-allow-unverified-email
       - --code-challenge-method=S256
     ports:
       - "8000:80"
+    depends_on:
+      - keycloak
 
 
 volumes:

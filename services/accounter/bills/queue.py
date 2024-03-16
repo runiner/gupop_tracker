@@ -7,8 +7,8 @@ import pika
 from pika.exchange_type import ExchangeType
 
 EXCHANGE = 'events'
-IN_QUEUE = 'events_in_tracker'
-IN_DLX_QUEUE = 'dlx.events_in_tracker'
+IN_QUEUE = 'events_in_accounter'
+IN_DLX_QUEUE = 'dlx.events_in_accounter'
 
 logger = logging.getLogger(__name__)
 

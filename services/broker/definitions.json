@@ -31,6 +31,44 @@
             "x-queue-type": "classic",
             "dead-letter-exchange":"dlx.events_in_tracker"
         }
+      },
+      {
+        "name": "dlx.events_in_accounter",
+        "vhost": "rabbit",
+        "durable": true,
+        "auto_delete": false,
+        "arguments": {
+            "x-queue-type": "classic"
+        }
+      },
+      {
+        "name": "events_in_accounter",
+        "vhost": "rabbit",
+        "durable": true,
+        "auto_delete": false,
+        "arguments": {
+            "x-queue-type": "classic",
+            "dead-letter-exchange":"dlx.events_in_accounter"
+        }
+      },
+      {
+        "name": "dlx.events_in_dashik",
+        "vhost": "rabbit",
+        "durable": true,
+        "auto_delete": false,
+        "arguments": {
+            "x-queue-type": "classic"
+        }
+      },
+      {
+        "name": "events_in_dashik",
+        "vhost": "rabbit",
+        "durable": true,
+        "auto_delete": false,
+        "arguments": {
+            "x-queue-type": "classic",
+            "dead-letter-exchange":"dlx.events_in_dashik"
+        }
       }
     ],
     "exchanges": [
@@ -45,21 +83,35 @@
     }
     ],
     "bindings": [
-    {
-        "source": "events",
-        "vhost": "rabbit",
-        "destination": "events_in_tracker",
-        "destination_type": "queue",
-        "arguments": {}
-    }
+      {
+          "source": "events",
+          "vhost": "rabbit",
+          "destination": "events_in_tracker",
+          "destination_type": "queue",
+          "arguments": {}
+      },
+      {
+          "source": "events",
+          "vhost": "rabbit",
+          "destination": "events_in_accounter",
+          "destination_type": "queue",
+          "arguments": {}
+      },
+      {
+         "source": "events",
+          "vhost": "rabbit",
+          "destination": "events_in_dashik",
+          "destination_type": "queue",
+          "arguments": {}
+      }
     ],
     "permissions": [
-    {
-      "user": "rabbituser",
-      "vhost": "rabbit",
-      "configure": ".*",
-      "write": ".*",
-      "read": ".*"
-    }
+      {
+        "user": "rabbituser",
+        "vhost": "rabbit",
+        "configure": ".*",
+        "write": ".*",
+        "read": ".*"
+      }
     ]
 }
