@@ -77,18 +77,6 @@ services:
     command: python3 manage.py runserver 0.0.0.0:8000
 
 
-  dashik-worker:
-    build: services/dashik
-    command: python3 manage.py worker
-    depends_on:
-      - rabbitmq
-
-
-  dashik-api:
-    build: services/dashik
-    command: python3 manage.py runserver 0.0.0.0:8000
-
-
   oauth-proxy:
     image: "quay.io/oauth2-proxy/oauth2-proxy:v7.6.0-alpine"
     # KeyCloak config as per https://oauth2-proxy.github.io/oauth2-proxy/configuration/providers/keycloak_oidc
@@ -101,7 +89,6 @@ services:
       - --upstream=http://hr-api:8000/api/hr/
       - --upstream=http://tracker-api:8000/api/tracker/
       - --upstream=http://accounter-api:8000/api/accounting/
-      - --upstream=http://dashik-api:8000/api/dash/
       - --provider=keycloak-oidc
       - --redirect-url=http://127.0.0.1:8000/oauth2/callback
       - --oidc-issuer-url=http://keycloak:8080/realms/master
